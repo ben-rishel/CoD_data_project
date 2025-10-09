@@ -37,7 +37,7 @@ cod <- read_excel("C:/Stat380 Github/CoD_data_project/CODGames2_mp.xlsx",
 For the first variable, let's take a look at the quantitative variable Eliminations. First, let's take a look at how much missing data there is.
 
 ```{r}
-cod %>% summarise(
+cod %>% summarize(
   "NA count" = sum(is.na(Eliminations))
   )
 ```
@@ -45,7 +45,7 @@ cod %>% summarise(
 There are no null values, so we can move to the next step. Let's view some summary statistics of the data and visualize it's distribution. Afterwards, let's see what we've learned from this information
 
 ```{r}
-cod %>% summarise(
+cod %>% summarize(
   min = min(Eliminations),
   first_quartile = quantile(Eliminations, .25),
   median = median(Eliminations),
@@ -65,17 +65,64 @@ cod %>% summarise(
 ```
 
 ```{r}
-cod %>% ggplot(mapping = aes(x = Eliminations)) +
+cod %>% ggplot(
+  mapping = aes(x = Eliminations)) +
   geom_histogram(
     binwidth = 3,
     color = "White",
     fill = "skyblue") +
   labs(
     x = "Number of Eliminations",
-    y = "Number of Games"
+    y = "Number of Games",
+    title = "Distribution of the Number of Eliminations"
   )
 ```
 
 Based on the summary statistics and histogram, multiple conclusions regarding the eliminations variable can be made. The range of eliminations goes from the minimum of 2 to the maximum of 39. This shows a wide range of possible outcomes for the player. However, the 1st quartile being 11 and the 3rd quartile being 18.5 shows that 50% of the players games had eliminations within that relatively small window of possible outcomes. This can be seen in the histogram as the majority of the observations look to be between about 10 and 20. The histogram also reveals that the there are only three games where the player scored 30 or more points. Overall, the player's eliminations vary quite a bit, but with an approximately normal distribution centered around the median of 14.
 
-# Variable 2 - 
+# Variable 2 - PrimaryWeapon
+
+For the second variable, let's look at the categorical variable PrimaryWeapon. This refers to the player's choice of weapon for the game. First, let's look to see if there is any missing data.
+
+```{r}
+cod %>% summarize(
+  "NA count" = sum(is.na(PrimaryWeapon))
+  )
+```
+
+There are no null values, so let's continue to some summary statistics and a visualization.
+
+```{r}
+cod %>% group_by(
+  PrimaryWeapon
+  ) %>%
+  summarize(
+    Proportion = n()/211 #211 observations in the data
+  ) %>% arrange(
+    desc(Proportion)
+  ) %>% kable(
+    caption = "Frequency Proportions for Primary Weapons",
+    digits = 2,
+    col.names = c("Primary Weapon", "Proportion")
+  ) %>% kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+```{r}
+cod %>% ggplot(
+  mapping = aes(x = PrimaryWeapon)
+) +
+  geom_bar( 
+    color = "White",
+    fill = "skyblue") +
+  labs(
+    x = "Primary Weapon Choice",
+    y = "Number of Games",
+    title = "Primary Weapon Choice Distribution"
+  )
+```
+
+From the summary statistics and the visualization, we can see that the player used 9 different weapons in their 211 games recorded in the dataset. The four most commonly used weapons (in order) are the M16, MP5, Pellington 703, and QBZ-83. In total, about 80% of the players games used one of these weapons. About 16% of the remaining games were split between the Krig 6 and Type 63. Lastly, just about 4% of the games were split between the AK-47, FFAR 1, and MG 82. Overall, this implies that the player changed which weapon they were using pretty frequently and did not rely on just one or two favorites. 
