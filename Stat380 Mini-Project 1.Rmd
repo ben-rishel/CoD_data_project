@@ -9,15 +9,23 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Front Matter - Clean Environment, Load Libraries, User Defined Functions
+## Front Matter and Task 1 - Read the dataset into R
 
 ```{r}
 rm(list = ls())
-#Add libraries as needed
-
 library(tidyverse)
+library(readxl)
 
-
+CODGames2_mp <- read_excel("C:/Stat380 Github/CoD_data_project/CODGames2_mp.xlsx", 
+  col_types = c("text", "text", "text", 
+    "text", "date", "text", "text", "numeric", 
+    "numeric", "numeric", "numeric", 
+    "numeric", "text", "text", "text", 
+    "text", "numeric", "numeric", "numeric", 
+    "numeric", "numeric", "numeric", 
+    "numeric", "numeric", "numeric", 
+    "numeric", "numeric"))
 
 ```
 
+## Task 2 - Explore 5 Variables
