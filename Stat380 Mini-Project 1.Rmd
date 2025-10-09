@@ -15,8 +15,10 @@ knitr::opts_chunk$set(echo = TRUE)
 rm(list = ls())
 library(tidyverse)
 library(readxl)
+library(kableExtra)
+library(ggplot2)
 
-CODGames2_mp <- read_excel("C:/Stat380 Github/CoD_data_project/CODGames2_mp.xlsx", 
+cod <- read_excel("C:/Stat380 Github/CoD_data_project/CODGames2_mp.xlsx", 
   col_types = c("text", "text", "text", 
     "text", "date", "text", "text", "numeric", 
     "numeric", "numeric", "numeric", 
@@ -29,3 +31,51 @@ CODGames2_mp <- read_excel("C:/Stat380 Github/CoD_data_project/CODGames2_mp.xlsx
 ```
 
 ## Task 2 - Explore 5 Variables
+
+# Variable 1 - Eliminations
+
+For the first variable, let's take a look at the quantitative variable Eliminations. First, let's take a look at how much missing data there is.
+
+```{r}
+cod %>% summarise(
+  "NA count" = sum(is.na(Eliminations))
+  )
+```
+
+There are no null values, so we can move to the next step. Let's view some summary statistics of the data and visualize it's distribution. Afterwards, let's see what we've learned from this information
+
+```{r}
+cod %>% summarise(
+  min = min(Eliminations),
+  first_quartile = quantile(Eliminations, .25),
+  median = median(Eliminations),
+  third_quartile = quantile(Eliminations, .75),
+  max = max(Eliminations),
+  sd = sd(Eliminations)
+  ) %>% kable(
+    caption = "Summary Statistics for Eliminations",
+    digits = 2,
+    col.names = c("Min", "1st Quartile", "Median", "3rd Quartile", "Max", "Standard Deviation"),
+    align = "c"
+  ) %>% kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+```{r}
+cod %>% ggplot(mapping = aes(x = Eliminations)) +
+  geom_histogram(
+    binwidth = 3,
+    color = "White",
+    fill = "skyblue") +
+  labs(
+    x = "Number of Eliminations",
+    y = "Number of Games"
+  )
+```
+
+Based on the summary statistics and histogram, multiple conclusions regarding the eliminations variable can be made. The range of eliminations goes from the minimum of 2 to the maximum of 39. This shows a wide range of possible outcomes for the player. However, the 1st quartile being 11 and the 3rd quartile being 18.5 shows that 50% of the players games had eliminations within that relatively small window of possible outcomes. This can be seen in the histogram as the majority of the observations look to be between about 10 and 20. The histogram also reveals that the there are only three games where the player scored 30 or more points. Overall, the player's eliminations vary quite a bit, but with an approximately normal distribution centered around the median of 14.
+
+# Variable 2 - 
