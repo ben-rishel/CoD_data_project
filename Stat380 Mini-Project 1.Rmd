@@ -1,0 +1,23 @@
+---
+title: "Stat380 Mini-Project 1"
+author: "Ben Rishel and Alven Huang"
+date: "October 11, 2025"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Front Matter - Clean Environment, Load Libraries, User Defined Functions
+
+```{r}
+rm(list = ls())
+#Add libraries as needed
+
+library(tidyverse)
+
+
+
+```
+
