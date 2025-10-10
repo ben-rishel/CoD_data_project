@@ -18,7 +18,7 @@ library(readxl)
 library(kableExtra)
 library(ggplot2)
 
-cod <- read_excel("C:/Stat380 Github/CoD_data_project/CODGames2_mp.xlsx", 
+cod <- read_excel("CODGames2_mp (1).xlsx", 
   col_types = c("text", "text", "text", 
     "text", "date", "text", "text", "numeric", 
     "numeric", "numeric", "numeric", 
@@ -125,4 +125,164 @@ cod %>% ggplot(
   )
 ```
 
-From the summary statistics and the visualization, we can see that the player used 9 different weapons in their 211 games recorded in the dataset. The four most commonly used weapons (in order) are the M16, MP5, Pellington 703, and QBZ-83. In total, about 80% of the players games used one of these weapons. About 16% of the remaining games were split between the Krig 6 and Type 63. Lastly, just about 4% of the games were split between the AK-47, FFAR 1, and MG 82. Overall, this implies that the player changed which weapon they were using pretty frequently and did not rely on just one or two favorites. 
+From the summary statistics and the visualization, we can see that the player used 9 different weapons in their 211 games recorded in the dataset. The four most commonly used weapons (in order) are the M16, MP5, Pellington 703, and QBZ-83. In total, about 80% of the players games used one of these weapons. About 16% of the remaining games were split between the Krig 6 and Type 63. Lastly, just about 4% of the games were split between the AK-47, FFAR 1, and MG 82. Overall, this implies that the player changed which weapon they were using pretty frequently and did not rely on just one or two favorites.
+
+# Variable 3 - Damage
+
+For the third variable, let's take a look at the quantitative variable, Damage. First, let's check if there is any missing data.
+
+```{r}
+cod %>% summarize(
+    "NA count" = sum(is.na(Damage))
+)
+```
+
+There are no null values. So, let's move onto the next step of finding summary statistics and a data visualization.
+
+```{r}
+cod %>% summarize(
+  min = min(Damage),
+  first_quartile = quantile(Damage, .25),
+  median = median(Damage),
+  third_quartile = quantile(Damage, .75),
+  max = max(Damage),
+  sd = sd(Damage)
+  ) %>% kable(
+    caption = "Summary Statistics for Damage",
+    digits = 2,
+    col.names = c("Min", "1st Quartile", "Median", "3rd Quartile", "Max", "Standard Deviation"),
+    align = "c"
+  ) %>% kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+```{r}
+cod %>% ggplot(
+  mapping = aes(x = Damage)) +
+  geom_histogram(
+    binwidth = 50,
+    color = "black",
+    fill = "skyblue") +
+  labs(
+    x = "Number of Damage",
+    y = "Number of Games",
+    title = "Distribution of the Number of Damage"
+  )
+```
+
+From the summary statistics and the visualization, we can gather many conclusions about the damage variable. The range of damage goes from a minimum of 56 and a maximum of 960. This shows a variety of plausible damages for a player. With the first quartile of damage being at 303.5 and the 3rd quartile being at 508, it shows that about 50% of players deal around 300-500 damage per game. This can also be seen in the histogram as the majority of the data exists in the middle of the visualization, in the 300-500 zone. We can also see that there were many cases where the damage done was outside the zone, whether it be more or less. We can see that this visualization is about normal, but can also be viewed as having a shape of being slightly skewed to the right with the median being 397.
+
+
+# Variable 4 - Deaths
+
+For the fourth variable, let's take a look at the quantitative variable of Deaths. First, let's check if there is any missing data.
+
+```{r}
+cod %>% summarize(
+    "NA count" = sum(is.na(Deaths))
+)
+```
+
+Since there are no null values, let's continue to some summary statistics and a visualization.
+
+```{r}
+cod %>% summarize(
+  min = min(Deaths),
+  first_quartile = quantile(Deaths, .25),
+  median = median(Deaths),
+  third_quartile = quantile(Deaths, .75),
+  max = max(Deaths),
+  sd = sd(Deaths)
+  ) %>% kable(
+    caption = "Summary Statistics for Deaths",
+    digits = 2,
+    col.names = c("Min", "1st Quartile", "Median", "3rd Quartile", "Max", "Standard Deviation"),
+    align = "c"
+  ) %>% kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+```{r}
+cod %>% ggplot(
+  mapping = aes(x = Deaths)) +
+  geom_histogram(
+    binwidth = 5,
+    color = "black",
+    fill = "red") +
+  labs(
+    x = "Number of Deaths",
+    y = "Number of Games",
+    title = "Distribution of the Number of Deaths"
+  )
+```
+
+From the summary statistics and the visualization, we can gather many conclusions about the deaths variable. The range of deaths goes from a minimum of 4 and a maximum of 42. This shows a variety of plausible deaths per game for a player. With the first quartile of damage being at 12 and the 3rd quartile being at 17.5, this shows that about 50% of players die about 10-18 times per game. This can also be seen in the histogram as the majority of the data exists in the left center of the visualization, in the 10-18 zone. We can also see that there were many cases where the deaths counter existed outside the zone, whether it be more or less. We can see that this visualization is a shape of being slightly skewed to the right with the median being 15.
+
+# Variable 5 - TotalXP 
+
+For the fifth variable, let's look at the quantative variable TotalXP This refers to the player's TotalXP for the game. First, let's look to see if there is any missing data.
+
+```{r}
+cod %>% summarize(
+  "NA count" = sum(is.na(TotalXP))
+  )
+```
+
+Since there are no null values, let's continue to some summary statistics and a visualization.
+
+```{r}
+cod %>% summarize(
+  min = min(TotalXP),
+  first_quartile = quantile(TotalXP, .25),
+  median = median(TotalXP),
+  third_quartile = quantile(TotalXP, .75),
+  max = max(TotalXP),
+  sd = sd(TotalXP)
+  ) %>% kable(
+    caption = "Summary Statistics for TotalXP",
+    digits = 2,
+    col.names = c("Min", "1st Quartile", "Median", "3rd Quartile", "Max", "Standard Deviation"),
+    align = "c"
+  ) %>% kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+```{r}
+cod %>% ggplot(
+  mapping = aes(x = TotalXP)) +
+  geom_histogram(
+    binwidth = 3500,
+    color = "black",
+    fill = "green") +
+  labs(
+    x = "Number of TotalXP",
+    y = "Number of Games",
+    title = "Distribution of the Number of Deaths"
+  )
+```
+
+From the summary statistics and the visualization, we can gather many conclusions about the TotalXP variable. The range of TotalXP goes from a minimum of 1935	and a maximum of 43816. This shows a variety of plausible TotalXP per game for a player. With the first quartile of TotalXP being at 8142 and the 3rd quartile being at 14103, this shows that about 50% of players obtain about 8000-14000 xp per game. This can also be seen in the histogram as the majority of the data exists in the left of the visualization, in the 10-18 zone. We can also see that there were cases where the total xp counter existed outside the zone, whether it be more or less. We can see that this visualization is a shape of being skewed to the right with the median being 10328.
+
+## Task 3 - Questions About the Data Set
+
+Although I have a solid understanding of FPS games and Call of Duty, I still have some questions about this data set.
+
+Q1.) First, we want to ask about the variable, FullPartial. We understand that the results in this column are either Full or Partial, but we have no clear idea of what this variable is describing.
+
+Q2.) The second question we want to ask is what the variable DidPlayerVote is referring to. Based on context clues, we can rule out some ideas. For example, we know it is not map voting because all of the results in the DidPlayerVote column are "No," but the map votes are more than none. We guess that it is for the gamemode of the match, but we are not too sure.
+
+Q3.) The third question we would like to ask is the time variable columns towards the end of the data set. These two columns are kind of just there in an awkward spot, so we are a bit confused. We know it cannot be the length of the match because of the missing values and the common sense side of things.
+
+
+
+
+
