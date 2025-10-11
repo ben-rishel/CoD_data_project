@@ -9,6 +9,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Discussion of Group Member Contributions
+
+The work was divided evenly between us. We contributed via a Github repository. After the work was completed, each of us reviewed the full document before submission to ensure consistency. Ben completed the first two variables of Task 2 and Task 4. Alven completed the third, fourth, and fifth variable analyses in Task 2 and Task 3. We each had to do Task 1 independently to ensure the code ran in each of our file paths.
+
 ## Front Matter and Task 1 - Read the dataset into R
 
 ```{r}
@@ -17,24 +21,25 @@ library(tidyverse)
 library(readxl)
 library(kableExtra)
 library(ggplot2)
+library(lubridate)
 
-cod <- read_excel("CODGames2_mp (1).xlsx", 
+cod <- read_excel("CODGames2_mp.xlsx", 
   col_types = c("text", "text", "text", 
-    "text", "date", "text", "text", "numeric", 
-    "numeric", "numeric", "numeric", 
-    "numeric", "text", "text", "text", 
-    "text", "numeric", "numeric", "numeric", 
-    "numeric", "numeric", "numeric", 
-    "numeric", "numeric", "numeric", 
-    "numeric", "numeric"))
+  "text", "date", "text", "text", "numeric", 
+  "numeric", "numeric", "numeric", 
+  "numeric", "text", "text", "text", 
+  "text", "numeric", "numeric", "numeric", 
+  "numeric", "numeric", "numeric", 
+  "numeric", "numeric", "numeric", 
+  "numeric", "numeric"))
 
 ```
 
-## Task 2 - Explore 5 Variables
+## Task 2 - Exploring 5 variables
 
-# Variable 1 - Eliminations
+### Variable 1 - Eliminations
 
-For the first variable, let's take a look at the quantitative variable Eliminations. First, let's take a look at how much missing data there is.
+For the first variable, let's take a look at the quantitative variable Eliminations. This is the number of eliminations the player had in the game. First, let's take a look at how much missing data there is.
 
 ```{r}
 cod %>% summarize(
@@ -42,7 +47,7 @@ cod %>% summarize(
   )
 ```
 
-There are no null values, so we can move to the next step. Let's view some summary statistics of the data and visualize it's distribution. Afterwards, let's see what we've learned from this information
+There are no null values, so we can move to the next step. Let's view some summary statistics of the data and visualize it's distribution. Afterwards, let's see what we've learned from this information.
 
 ```{r}
 cod %>% summarize(
@@ -60,7 +65,7 @@ cod %>% summarize(
   ) %>% kable_styling(
     bootstrap_options = c("striped", "condensed"),
     full_width = FALSE,
-    position = "center"
+    position = "left"
   )
 ```
 
@@ -69,7 +74,7 @@ cod %>% ggplot(
   mapping = aes(x = Eliminations)) +
   geom_histogram(
     binwidth = 3,
-    color = "White",
+    color = "black",
     fill = "skyblue") +
   labs(
     x = "Number of Eliminations",
@@ -80,7 +85,7 @@ cod %>% ggplot(
 
 Based on the summary statistics and histogram, multiple conclusions regarding the eliminations variable can be made. The range of eliminations goes from the minimum of 2 to the maximum of 39. This shows a wide range of possible outcomes for the player. However, the 1st quartile being 11 and the 3rd quartile being 18.5 shows that 50% of the players games had eliminations within that relatively small window of possible outcomes. This can be seen in the histogram as the majority of the observations look to be between about 10 and 20. The histogram also reveals that the there are only three games where the player scored 30 or more points. Overall, the player's eliminations vary quite a bit, but with an approximately normal distribution centered around the median of 14.
 
-# Variable 2 - PrimaryWeapon
+### Variable 2 - PrimaryWeapon
 
 For the second variable, let's look at the categorical variable PrimaryWeapon. This refers to the player's choice of weapon for the game. First, let's look to see if there is any missing data.
 
@@ -107,7 +112,7 @@ cod %>% group_by(
   ) %>% kable_styling(
     bootstrap_options = c("striped", "condensed"),
     full_width = FALSE,
-    position = "center"
+    position = "left"
   )
 ```
 
@@ -127,9 +132,9 @@ cod %>% ggplot(
 
 From the summary statistics and the visualization, we can see that the player used 9 different weapons in their 211 games recorded in the dataset. The four most commonly used weapons (in order) are the M16, MP5, Pellington 703, and QBZ-83. In total, about 80% of the players games used one of these weapons. About 16% of the remaining games were split between the Krig 6 and Type 63. Lastly, just about 4% of the games were split between the AK-47, FFAR 1, and MG 82. Overall, this implies that the player changed which weapon they were using pretty frequently and did not rely on just one or two favorites.
 
-# Variable 3 - Damage
+### Variable 3 - Damage
 
-For the third variable, let's take a look at the quantitative variable, Damage. First, let's check if there is any missing data.
+For the third variable, let's take a look at the quantitative variable, Damage. This refers to the amount of harm a player inflicted with their weapon in the game. First, let's check if there is any missing data.
 
 ```{r}
 cod %>% summarize(
@@ -155,7 +160,7 @@ cod %>% summarize(
   ) %>% kable_styling(
     bootstrap_options = c("striped", "condensed"),
     full_width = FALSE,
-    position = "center"
+    position = "left"
   )
 ```
 
@@ -173,12 +178,12 @@ cod %>% ggplot(
   )
 ```
 
-From the summary statistics and the visualization, we can gather many conclusions about the damage variable. The range of damage goes from a minimum of 56 and a maximum of 960. This shows a variety of plausible damages for a player. With the first quartile of damage being at 303.5 and the 3rd quartile being at 508, it shows that about 50% of players deal around 300-500 damage per game. This can also be seen in the histogram as the majority of the data exists in the middle of the visualization, in the 300-500 zone. We can also see that there were many cases where the damage done was outside the zone, whether it be more or less. We can see that this visualization is about normal, but can also be viewed as having a shape of being slightly skewed to the right with the median being 397.
+From the summary statistics and the visualization, we can gather many conclusions about the damage variable. The range of damage goes from a minimum of 56 to a maximum of 960. This shows a variety of plausible damages for a player. With the first quartile of damage being at 303.5 and the 3rd quartile being at 508, it shows that in 50% of the player's games, they dealt around 300-500 damage. This can also be seen in the histogram as the majority of the data exists in the middle of the visualization, in the 300-500 zone. We can also see that there were many cases where the damage done was outside the zone, whether it be more or less. We can see that this visualization is about normal, but can also be viewed as having a shape of being slightly skewed to the right with the median being 397.
 
 
-# Variable 4 - Deaths
+### Variable 4 - Deaths
 
-For the fourth variable, let's take a look at the quantitative variable of Deaths. First, let's check if there is any missing data.
+For the fourth variable, let's take a look at the quantitative variable of Deaths. This is the number of times the player died and respawned in the game. First, let's check if there is any missing data.
 
 ```{r}
 cod %>% summarize(
@@ -204,7 +209,7 @@ cod %>% summarize(
   ) %>% kable_styling(
     bootstrap_options = c("striped", "condensed"),
     full_width = FALSE,
-    position = "center"
+    position = "left"
   )
 ```
 
@@ -212,7 +217,7 @@ cod %>% summarize(
 cod %>% ggplot(
   mapping = aes(x = Deaths)) +
   geom_histogram(
-    binwidth = 5,
+    binwidth = 3,
     color = "black",
     fill = "red") +
   labs(
@@ -222,11 +227,11 @@ cod %>% ggplot(
   )
 ```
 
-From the summary statistics and the visualization, we can gather many conclusions about the deaths variable. The range of deaths goes from a minimum of 4 and a maximum of 42. This shows a variety of plausible deaths per game for a player. With the first quartile of damage being at 12 and the 3rd quartile being at 17.5, this shows that about 50% of players die about 10-18 times per game. This can also be seen in the histogram as the majority of the data exists in the left center of the visualization, in the 10-18 zone. We can also see that there were many cases where the deaths counter existed outside the zone, whether it be more or less. We can see that this visualization is a shape of being slightly skewed to the right with the median being 15.
+From the summary statistics and the visualization, we can gather many conclusions about the deaths variable. The range of deaths goes from a minimum of 4 and a maximum of 42. This shows a variety of plausible deaths per game for a player. With the first quartile of deaths being at 12 and the 3rd quartile being at 17.5, this shows that in 50% of the player's games, they died about 10-18 times. This can also be seen in the histogram as the majority of the data exists in the left center of the visualization, in the 10-18 zone. We can also see that there were many cases where the deaths counter existed outside the zone, whether it be more or less. We can see that this visualization is a shape of being skewed to the right with the median being 15.
 
-# Variable 5 - TotalXP 
+### Variable 5 - TotalXP 
 
-For the fifth variable, let's look at the quantative variable TotalXP This refers to the player's TotalXP for the game. First, let's look to see if there is any missing data.
+For the fifth variable, let's look at the quantitative variable TotalXP. This refers to the player's TotalXP gained for the game, likely derived from positive actions during the game. First, let's look to see if there is any missing data.
 
 ```{r}
 cod %>% summarize(
@@ -252,7 +257,7 @@ cod %>% summarize(
   ) %>% kable_styling(
     bootstrap_options = c("striped", "condensed"),
     full_width = FALSE,
-    position = "center"
+    position = "left"
   )
 ```
 
@@ -264,25 +269,66 @@ cod %>% ggplot(
     color = "black",
     fill = "green") +
   labs(
-    x = "Number of TotalXP",
+    x = "Amount of TotalXP",
     y = "Number of Games",
-    title = "Distribution of the Number of Deaths"
+    title = "Distribution of the Amount of Total XP"
   )
 ```
 
-From the summary statistics and the visualization, we can gather many conclusions about the TotalXP variable. The range of TotalXP goes from a minimum of 1935	and a maximum of 43816. This shows a variety of plausible TotalXP per game for a player. With the first quartile of TotalXP being at 8142 and the 3rd quartile being at 14103, this shows that about 50% of players obtain about 8000-14000 xp per game. This can also be seen in the histogram as the majority of the data exists in the left of the visualization, in the 10-18 zone. We can also see that there were cases where the total xp counter existed outside the zone, whether it be more or less. We can see that this visualization is a shape of being skewed to the right with the median being 10328.
+From the summary statistics and the visualization, we can gather many conclusions about the TotalXP variable. The range of TotalXP goes from a minimum of 1,935	and a maximum of 43,816. This shows a wide variety of plausible TotalXP per game for a player. With the first quartile of TotalXP being at 8,142 and the 3rd quartile being at 14,103, this shows that about 50% of the player's games resulted in about 8,000-14,000 XP. This can also be seen in the histogram as the majority of the data exists in the left of the visualization, in the 5000 to 20,000 range. We can also see that there were cases where the total XP counter existed outside this zone, whether it be more or less. We can see that this distribution is skewed to the right with a median of 10,328 and several large values of 30,000 or more.
 
-## Task 3 - Questions About the Data Set
+## Task 3 - Questions about the data set
 
-Although I have a solid understanding of FPS games and Call of Duty, I still have some questions about this data set.
+Although we have a solid understanding of FPS games and Call of Duty, I still have some questions about this data set.
 
-Q1.) First, we want to ask about the variable, FullPartial. We understand that the results in this column are either Full or Partial, but we have no clear idea of what this variable is describing.
+Q1. First, we want to ask about the variable, FullPartial. We understand that the results in this column are either Full or Partial, but we have no clear idea of what this variable is describing.
 
-Q2.) The second question we want to ask is what the variable DidPlayerVote is referring to. Based on context clues, we can rule out some ideas. For example, we know it is not map voting because all of the results in the DidPlayerVote column are "No," but the map votes are more than none. We guess that it is for the gamemode of the match, but we are not too sure.
+Q2. The second question we want to ask is regarding data collection. Why is the data specifically from the date range 6/06/2022 to 8/21/2022? Also, does the dataset show every game this player played, or does it omit certain games?
 
-Q3.) The third question we would like to ask is the time variable columns towards the end of the data set. These two columns are kind of just there in an awkward spot, so we are a bit confused. We know it cannot be the length of the match because of the missing values and the common sense side of things.
+Q3. Lastly, how is the XPType column determined? Is it related to other data collected in this dataset?
 
+## Task 4 - Asking a quetsion that can be answered using the dataset
 
+### Part 1 - Is the player's performance as quantified by the amount of experience points gained (TotalXP variable) changing over time?
 
+```{r}
+cod %>%
+  mutate(
+    month = month(Date, label = TRUE, abbr = FALSE)
+  ) %>%
+  group_by(month) %>%
+  ggplot(
+    mapping = aes(
+      x = month,
+      y = TotalXP
+    )
+  ) +
+  geom_boxplot() +
+  labs(
+    x = "Month",
+    y = "Total XP Gained",
+    title = "Total XP Gained by Month"
+  )
+  
+```
 
+It is pretty clear from the visualization that the player's performance, measured by total XP gained is not improving over time. The median lines across each month are very similar, as are the first and third quartiles. There is no noticeable difference over time in either the positive or negative direction. This could be due to the player not playing enough to get better relative to the players they are playing against or due to skill based matchmaking. Skill based matchmaking is a technique that games use to place players into games based on their previous performance to ensure that every game they play is a competitive, enjoyable experience.
 
+### Part 2 - Which weapon does the player perform the best with based on the number of eliminations?
+
+```{r}
+cod %>%
+  group_by(PrimaryWeapon) %>%
+  ggplot(
+    mapping = aes(
+      x = PrimaryWeapon,
+      y = Eliminations)) + 
+  geom_boxplot()+
+  labs(
+    x = "Primary Weapon",
+    y = "Eliminations",
+    title = "Eliminations by Primary Weapon Choice"
+  )
+```
+
+As you can see in this visualization, the player's performance in terms of eliminations is highly variable based upon the weapon that they chose. To answer the initial question, the FFAR 1 has the highest median, third quartile, and maximum eliminations of any weapon that the player used. However, when the player used the MG 82, the player's performance was less volatile than with the FFAR 1. It is of note that the player also performed well with the Type 63 as that is the second highest median. Ultimately, depending on the definition of "performed best" either the FFAR 1 or MG 82 were the weapons that player performed best with. The player was consistently "good" with the MG 82, but they definitely had more "great" performances with the FFAR 1. This is interesting when considering the initial analysis of the PrimaryWeapon variable that we performed because the FFAR1 and the MG82 were the guns that the player used the least. It's possible that the lack of observations in the dataset for these weapons is not providing an accurate represenation of how the player performs with these weapons. Of the four most commonly used weapons by the player (M16, MP5, Pellington 703, and QBZ-83), the player performed similarly well other than noticeably worse results with the Pelington 703.
