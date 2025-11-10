@@ -54,3 +54,220 @@ When counting the NA values by row, you can clearly see that there are many NA v
 ## Task 2 - 3 More Univariate Explorations
 
 We previously explored Eliminations, PrimaryWeapon, Damage, Deaths, and TotalXP in Mini-Project 1.
+
+# Variable 1 - Score
+
+For the first variable, let's take a look at the quantitative variable Score First, let's take a look at how much missing data there is.
+
+```{r}
+cod %>% summarize(
+  "NA count" = sum(is.na(Score))
+  )
+```
+
+There are no null values, so we can move to the next step. Let's view some summary statistics of the data and visualize it's distribution. Afterwards, let's see what we've learned from this information
+
+```{r}
+cod %>% summarize(
+  min = min(Score),
+  first_quartile = quantile(Score, .25),
+  median = median(Score),
+  third_quartile = quantile(Score, .75),
+  max = max(Score),
+  sd = sd(Score)
+  ) %>% kable(
+    caption = "Summary Statistics for Score",
+    digits = 2,
+    col.names = c("Min", "1st Quartile", "Median", "3rd Quartile", "Max", "Standard Deviation"),
+    align = "c"
+  ) %>% kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+```{r}
+cod %>% ggplot(
+  mapping = aes(x = Score)) +
+  geom_histogram(
+    binwidth = 500,
+    color = "White",
+    fill = "skyblue") +
+  labs(
+    x = "Score",
+    y = "Number of Games",
+    title = "Distribution of the Scores"
+  )
+```
+
+Based on the summary statistics and histogram, multiple conclusions regarding the score variable can be made. The range of the score goes from the minimum of 100 to the maximum of 7315. This shows a wide range of possible outcomes for the player. However, the 1st quartile being 1982.5 and the 3rd quartile being 3582.5 shows that 50% of the players games had eliminations within that window of possible outcomes. This can be seen in the histogram as the majority of the observations look to be between about 1500 and approximately 3700. The histogram also reveals that the there are few games where the player scored 6000 and more. Overall, the player's scores vary quite a bit, but with an approximately normal distribution centered around the median of 2770.
+
+# Variable 2 - GameType
+
+For the second variable, let's look at the categorical variable GameType This refers to the type/mode that was played in each game. First, let's look to see if there is any missing data.
+
+```{r}
+cod %>% summarize(
+  "NA count" = sum(is.na(GameType))
+  )
+```
+
+There are no null values, so let's continue to some summary statistics and a visualization.
+
+```{r}
+cod %>% group_by(
+  GameType
+  ) %>%
+  summarize(
+    Proportion = n()/211 #211 observations in the data
+  ) %>% arrange(
+    desc(Proportion)
+  ) %>% kable(
+    caption = "Frequency Proportions for Game Type",
+    digits = 2,
+    col.names = c("Game Type", "Proportion")
+  ) %>% kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+```{r}
+cod %>% ggplot(
+  mapping = aes(x = GameType)
+) +
+  geom_bar( 
+    color = "White",
+    fill = "green") +
+  labs(
+    x = "Game Type",
+    y = "Number of Games",
+    title = "Game Type Distribution"
+  )
+```
+
+From the summary statistics and the visualization, we can see that the player used that were four different types of modes that were played in this data set. The most commonly played mode was TDM, Team Deathmatch. In total, about 93% of the games were TDM while the remaining 7% were split among the modes, Domination, Hardpoint, and Kill Confirmed. Domination and Kill Confirmed sat at just 1% each. In conclusion, this explains that TDM is a much more favored game mode with Hardpoint sitting in second.
+
+# Variable 3 - Choice
+
+For the third variable, let's look at the categorical variable Choice. This refers to the map of each game. First, let's look to see if there is any missing data.
+
+```{r}
+cod %>% summarize(
+  "NA count" = sum(is.na(Choice))
+  )
+```
+
+There is 1 NA value. So, let's filter that out before we move on to the summary statistics and visualization.
+
+```{r}
+cod <- #Filters out the NA value
+  cod %>% 
+  filter(!is.na(Choice)) #From 211 obs. to 210
+```
+
+```{r}
+cod %>% group_by(
+  Choice
+  ) %>%
+  summarize(
+    Proportion = n()/210 #210 observations in the data
+  ) %>% arrange(
+    desc(Proportion)
+  ) %>% kable(
+    caption = "Frequency Proportions for Choice",
+    digits = 2,
+    col.names = c("Choice", "Proportion")
+  ) %>% kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+```{r}
+cod %>% ggplot(
+  mapping = aes(x = Choice)
+) +
+  geom_bar( 
+    bindwith = 20,
+    color = "White",
+    fill = "red") +
+  labs(
+    x = "Map Choice",
+    y = "Number of Games",
+    title = "Distribution for the Map Choice"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8)) #Researched to shrink text size
+```
+
+From the summary statistics and the visualization, we can see that the Choice of maps played included a wide variety. The top three most common maps played were Crossroads Strike, Diesel, and Rush. Those three maps stood at 7% while the next highest was 6%. All the percentages were pretty close together. From the visualization you can clearly see how many games were played with each of the maps. For example, the top three maps were played 15 times from this data set. The least played map was Amerika, standing at 1%, where it is approximately 3 times on the plot.
+
+## Task 3 - Exploring Relationships between Variables
+
+In this task, we will take two variables from the data set and explore the relationship between the two. We will choose the variables Eliminations and Deaths. Both of these variables are quantitative. We are going to make individual summary statistics and then make a combined statistic.
+
+```{r}
+cod %>% summarize(
+  min = min(Eliminations),
+  first_quartile = quantile(Eliminations, .25),
+  median = median(Eliminations),
+  third_quartile = quantile(Eliminations, .75),
+  max = max(Eliminations),
+  sd = sd(Eliminations)
+  ) %>% kable(
+    caption = "Summary Statistics for Eliminations",
+    digits = 2,
+    col.names = c("Min", "1st Quartile", "Median", "3rd Quartile", "Max", "Standard Deviation"),
+    align = "c"
+  ) %>% kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+```{r}
+cod %>% summarize(
+  min = min(Deaths),
+  first_quartile = quantile(Deaths, .25),
+  median = median(Deaths),
+  third_quartile = quantile(Deaths, .75),
+  max = max(Deaths),
+  sd = sd(Deaths)
+  ) %>% kable(
+    caption = "Summary Statistics for Deaths",
+    digits = 2,
+    col.names = c("Min", "1st Quartile", "Median", "3rd Quartile", "Max", "Standard Deviation"),
+    align = "c"
+  ) %>% kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
+```
+
+```{r}
+cod %>%  #The most common relationship in video games, Kill-Death Ratio (kdr)
+  summarize(
+    kdr = mean(Eliminations / Deaths, na.rm = TRUE)
+  )
+```
+
+```{r}
+cod %>% 
+  ggplot(aes(x = Deaths, y = Eliminations)) +
+  geom_point(color = "black") +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(
+    x = "Deaths",
+    y = "Eliminations",
+    title = "Relationship Between Eliminations and Deaths"
+  )
+```
+
+From the summary statistics and the visualization, we can see that the relationship between eliminations and deaths is positive. While providing individual summary statistics for both variables, we also created a new summary statistic by using the mean value and dividing the two variables. We created a variable called kdr, better known as kill death ratio. The kdr for each game is calculated by dividing eliminations and deaths. To find the ultimate kdr of this data set, we took the mean value and arrived at approximately 1.11. From the scatterplot, we can see that there is a weak positive relationship between the two. The points are widely scattered. The information we can get from this plot is that in some cases, more eliminations can also mean more deaths. However, because of its wide spread, it is hard to predict eliminations based on the amount of deaths and vice versa.
+
+
