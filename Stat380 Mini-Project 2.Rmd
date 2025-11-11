@@ -1,7 +1,7 @@
 ---
 title: "Stat380 Mini-Project 2"
 author: "Ben Rishel and Alven Huang"
-date: "October 11, 2025"
+date: "November 15, 2025"
 output: html_document
 ---
 
@@ -54,7 +54,7 @@ When counting the NA values by row, you can clearly see that there are many NA v
 
 We previously explored Eliminations, PrimaryWeapon, Damage, Deaths, and TotalXP in Mini-Project 1.
 
-# Variable 1 - Score
+### Variable 1 - Score
 
 For the first variable, let's take a look at the quantitative variable Score. First, let's take a look at how much missing data there is.
 
@@ -102,7 +102,7 @@ cod %>% ggplot(
 
 Based on the summary statistics and histogram, multiple conclusions regarding the score variable can be made. The range of the score goes from the minimum of 100 to the maximum of 7315. This shows a wide range of possible outcomes for the player. However, the 1st quartile being 1982.5 and the 3rd quartile being 3582.5 shows that 50% of the players games had eliminations within that window of possible outcomes. This can be seen in the histogram as the majority of the observations look to be between about 1500 and approximately 3700. The histogram also reveals that the there are few games where the player scored 6000 and more. Overall, the player's scores vary quite a bit, but with an approximately normal distribution centered around the median of 2770.
 
-# Variable 2 - GameType
+### Variable 2 - GameType
 
 For the second variable, let's look at the categorical variable GameType. This refers to the type/mode that was played in each game. First, let's look to see if there is any missing data.
 
@@ -149,7 +149,7 @@ cod %>% ggplot(
 
 From the summary statistics and the visualization, we can see that the player used that were four different types of modes that were played in this data set. The most commonly played mode was TDM, Team Deathmatch. In total, about 93% of the games were TDM while the remaining 7% were split among the modes, Domination, Hardpoint, and Kill Confirmed. Domination and Kill Confirmed sat at just 1% each. In conclusion, this explains that TDM is a much more favored game mode for this player with Hardpoint sitting in second.
 
-# Variable 3 - Choice
+### Variable 3 - Choice
 
 For the third variable, let's look at the categorical variable Choice. This refers to the map of each game. First, let's look to see if there is any missing data.
 
@@ -268,7 +268,14 @@ cod %>%
   )
 ```
 
-From the summary statistics and the visualization, we can see that the relationship between eliminations and deaths is slightly positive. While providing individual summary statistics for both variables, we also created a new summary statistic by using the mean value and dividing the two variables. We created a variable called kdr, better known as kill-death ratio. The kdr for each game is calculated by dividing eliminations and deaths. To find the ultimate kdr of this data set, we took the mean value and arrived at approximately 1.11. This means that, on average, the player had 1.11 eliminations for every death during their games. From the scatterplot, we can see that there is a weak positive relationship between the two. The points are widely scattered. The information we can get from this plot is that in some cases, more eliminations can also mean more deaths. However, because of its wide spread, it is hard to predict eliminations based on the amount of deaths and vice versa.
+```{r}
+model_lm <- lm(Eliminations ~ Deaths, data = cod)
+summary(model_lm)
+```
+
+From the summary statistics and the visualization, we can see that the relationship between eliminations and deaths is slightly positive. From the linear model, we can conclude that for each additional death, the average change in eliminations is an increase in .06922. From the scatterplot, we can see that there is a weak positive relationship between the two. The points are widely scattered. This weak positive relationship can be summarized by the Multiple R-squared value of .003351. This means that only .003351 of total variation in eliminations can be explained by deaths. This is a very weak relationship. 
+
+While providing individual summary statistics for both variables, we also created a new summary statistic by using the mean value and dividing the two variables. We created a variable called kdr, better known as kill-death ratio. The kdr for each game is calculated by dividing eliminations and deaths. To find the ultimate kdr of this data set, we took the mean value and arrived at approximately 1.11. This means that, on average, the player had 1.11 eliminations for every death during their games. 
 
 ## Task 4 - Calculating proportion of game outcomes (win, loss, draw)
 
@@ -293,7 +300,7 @@ From the above statistics, the player in the dataset won approximately 54% of th
 
 ## Task 5 - Answering an inference question with logistic regression
 
-# How does a player's eliminations and deaths explain whether the player won the game?
+### How does a player's eliminations and deaths explain whether the player won the game?
 
 ```{r}
 cod <- cod %>%
