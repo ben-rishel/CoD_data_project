@@ -22,6 +22,7 @@ library(readxl)
 library(kableExtra)
 library(ggplot2)
 library(lubridate)
+library(forcats)
 
 cod <- read_excel("CODGames2_mp.xlsx", 
   col_types = c("text", "text", "text", 
@@ -57,7 +58,7 @@ We previously explored Eliminations, PrimaryWeapon, Damage, Deaths, and TotalXP 
 
 # Variable 1 - Score
 
-For the first variable, let's take a look at the quantitative variable Score First, let's take a look at how much missing data there is.
+For the first variable, let's take a look at the quantitative variable Score. First, let's take a look at how much missing data there is.
 
 ```{r}
 cod %>% summarize(
@@ -65,7 +66,7 @@ cod %>% summarize(
   )
 ```
 
-There are no null values, so we can move to the next step. Let's view some summary statistics of the data and visualize it's distribution. Afterwards, let's see what we've learned from this information
+There are no null values, so we can move to the next step. Let's view some summary statistics of the data and visualize its distribution. Afterwards, let's see what we've learned from this information
 
 ```{r}
 cod %>% summarize(
@@ -148,7 +149,7 @@ cod %>% ggplot(
   )
 ```
 
-From the summary statistics and the visualization, we can see that the player used that were four different types of modes that were played in this data set. The most commonly played mode was TDM, Team Deathmatch. In total, about 93% of the games were TDM while the remaining 7% were split among the modes, Domination, Hardpoint, and Kill Confirmed. Domination and Kill Confirmed sat at just 1% each. In conclusion, this explains that TDM is a much more favored game mode with Hardpoint sitting in second.
+From the summary statistics and the visualization, we can see that the player used that were four different types of modes that were played in this data set. The most commonly played mode was TDM, Team Deathmatch. In total, about 93% of the games were TDM while the remaining 7% were split among the modes, Domination, Hardpoint, and Kill Confirmed. Domination and Kill Confirmed sat at just 1% each. In conclusion, this explains that TDM is a much more favored game mode for this player with Hardpoint sitting in second.
 
 # Variable 3 - Choice
 
@@ -188,11 +189,12 @@ cod %>% group_by(
 ```
 
 ```{r}
-cod %>% ggplot(
-  mapping = aes(x = Choice)
+cod %>% arrange(
+  desc(Choice)
+  ) %>% ggplot(
+  mapping = aes(x = fct_infreq(Choice, ordered = TRUE))
 ) +
   geom_bar( 
-    bindwith = 20,
     color = "White",
     fill = "red") +
   labs(
@@ -203,7 +205,7 @@ cod %>% ggplot(
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8)) #Researched to shrink text size
 ```
 
-From the summary statistics and the visualization, we can see that the Choice of maps played included a wide variety. The top three most common maps played were Crossroads Strike, Diesel, and Rush. Those three maps stood at 7% while the next highest was 6%. All the percentages were pretty close together. From the visualization you can clearly see how many games were played with each of the maps. For example, the top three maps were played 15 times from this data set. The least played map was Amerika, standing at 1%, where it is approximately 3 times on the plot.
+From the summary statistics and the visualization, we can see that the Choice of maps played included a wide variety. The top three most common maps played were Crossroads Strike, Diesel, and Rush. Those three maps stood at 7% while the next highest was 6%. All the percentages were pretty close together. From the visualization you can clearly see how many games were played with each of the maps. For example, the top three maps were played 15 times from this data set. The least played map was Amerika, which was played just 3 times.
 
 ## Task 3 - Exploring Relationships between Variables
 
@@ -268,6 +270,23 @@ cod %>%
   )
 ```
 
-From the summary statistics and the visualization, we can see that the relationship between eliminations and deaths is positive. While providing individual summary statistics for both variables, we also created a new summary statistic by using the mean value and dividing the two variables. We created a variable called kdr, better known as kill death ratio. The kdr for each game is calculated by dividing eliminations and deaths. To find the ultimate kdr of this data set, we took the mean value and arrived at approximately 1.11. From the scatterplot, we can see that there is a weak positive relationship between the two. The points are widely scattered. The information we can get from this plot is that in some cases, more eliminations can also mean more deaths. However, because of its wide spread, it is hard to predict eliminations based on the amount of deaths and vice versa.
+From the summary statistics and the visualization, we can see that the relationship between eliminations and deaths is slightly positive. While providing individual summary statistics for both variables, we also created a new summary statistic by using the mean value and dividing the two variables. We created a variable called kdr, better known as kill-death ratio. The kdr for each game is calculated by dividing eliminations and deaths. To find the ultimate kdr of this data set, we took the mean value and arrived at approximately 1.11. This means that, on average, the player had 1.11 eliminations for every death during their games. From the scatterplot, we can see that there is a weak positive relationship between the two. The points are widely scattered. The information we can get from this plot is that in some cases, more eliminations can also mean more deaths. However, because of its wide spread, it is hard to predict eliminations based on the amount of deaths and vice versa.
 
+## Task 4 - Calculating proportion of game outcomes (win, loss, draw)
 
+```{r}
+cod %>%
+  separate(Result, into = c("player_score", "other_score"), sep = "-", convert = TRUE) %>%
+  mutate(
+    win = ifelse(player_score > other_score, 1, 0),
+    loss = ifelse(player_score < other_score, 1, 0),
+    draw = ifelse(player_score == other_score, 1, 0)
+  ) %>%
+  summarise(
+    win_proportion = mean(win),
+    loss_proportion = mean(loss),
+    draw_proportion = mean(draw)
+  )
+```
+
+From the above statistics, the player in the dataset won approximately 54% of their games, lost approximately 45%, and drew approximately 1%.
