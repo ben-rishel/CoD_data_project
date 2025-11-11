@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Discussion of Group Member Contributions
 
-The work was divided evenly between us. We contributed via a Github repository. After the work was completed, each of us reviewed the full document before submission to ensure consistency. Ben completed Task 1 and Tasks 4 and 5. Alven completed the Tasks 2 and 3.
+The work was divided evenly between us. We contributed via a Github repository. After the work was completed, each of us reviewed the full document before submission to ensure consistency. Ben completed Tasks 1, 4, and 5. Alven completed Tasks 2 and 3.
 
 ## Front Matter
 
@@ -20,8 +20,6 @@ rm(list = ls())
 library(tidyverse)
 library(readxl)
 library(kableExtra)
-library(ggplot2)
-library(lubridate)
 library(forcats)
 
 cod <- read_excel("CODGames2_mp.xlsx", 
@@ -44,13 +42,13 @@ Let's investigate why it is a bad idea to use na.omit() to remove observations w
 sapply(cod, function(x) sum(is.na(x)))
 ```
 
-If we used na.omit() on this dataset, we would remove any row that has at least one NA value. In this instance, that would result in the entire dataset being removed because there are 211 observations in the dataset and also 211 NA values for diffuses, plants, detonates, and deposits. A better approach in this instance would be to remove just the columns with so many NA values. Now, let's make confirm that there are NA values in every row.
+If we used na.omit() on this dataset, we would remove any row that has at least one NA value. In this instance, that would result in the entire dataset being removed because there are 211 observations in the dataset and also 211 NA values for diffuses, plants, detonates, and deposits. A better approach in this instance would be to remove just the columns with so many NA values. Now, let's confirm that there are NA values in every row.
 
 ```{r}
 apply(cod, 1, function(x) sum(is.na(x)))
 ```
 
-When counting the NA values by row, you can clearly see that there are many NA values per each row. This supports the previously mentioned point that every single row would be omitted with na.omit().
+When counting the NA values by row, you can clearly see that there are many NA values per each row. This supports the previously mentioned point that every single row would be omitted with na.omit(). Therefore, na.omit() is not a reasonable approach to handling null values in this dataset.
 
 ## Task 2 - 3 More Univariate Explorations
 
@@ -106,7 +104,7 @@ Based on the summary statistics and histogram, multiple conclusions regarding th
 
 # Variable 2 - GameType
 
-For the second variable, let's look at the categorical variable GameType This refers to the type/mode that was played in each game. First, let's look to see if there is any missing data.
+For the second variable, let's look at the categorical variable GameType. This refers to the type/mode that was played in each game. First, let's look to see if there is any missing data.
 
 ```{r}
 cod %>% summarize(
@@ -121,8 +119,8 @@ cod %>% group_by(
   GameType
   ) %>%
   summarize(
-    Proportion = n()/211 #211 observations in the data
-  ) %>% arrange(
+    Proportion = n()/nrow(cod) 
+    ) %>% arrange(
     desc(Proportion)
   ) %>% kable(
     caption = "Frequency Proportions for Game Type",
@@ -164,17 +162,17 @@ cod %>% summarize(
 There is 1 NA value. So, let's filter that out before we move on to the summary statistics and visualization.
 
 ```{r}
-cod <- #Filters out the NA value
+cod2 <- #Filters out the NA value
   cod %>% 
   filter(!is.na(Choice)) #From 211 obs. to 210
 ```
 
 ```{r}
-cod %>% group_by(
+cod2 %>% group_by(
   Choice
   ) %>%
   summarize(
-    Proportion = n()/210 #210 observations in the data
+    Proportion = n()/nrow(cod2)
   ) %>% arrange(
     desc(Proportion)
   ) %>% kable(
@@ -275,18 +273,58 @@ From the summary statistics and the visualization, we can see that the relations
 ## Task 4 - Calculating proportion of game outcomes (win, loss, draw)
 
 ```{r}
-cod %>%
+cod <- cod %>%
   separate(Result, into = c("player_score", "other_score"), sep = "-", convert = TRUE) %>%
   mutate(
-    win = ifelse(player_score > other_score, 1, 0),
-    loss = ifelse(player_score < other_score, 1, 0),
-    draw = ifelse(player_score == other_score, 1, 0)
-  ) %>%
+    Win = ifelse(player_score > other_score, 1, 0),
+    Loss = ifelse(player_score < other_score, 1, 0),
+    Draw = ifelse(player_score == other_score, 1, 0)
+  ) 
+
+cod %>%
   summarise(
-    win_proportion = mean(win),
-    loss_proportion = mean(loss),
-    draw_proportion = mean(draw)
+    win_proportion = mean(Win),
+    loss_proportion = mean(Loss),
+    draw_proportion = mean(Draw)
   )
 ```
 
 From the above statistics, the player in the dataset won approximately 54% of their games, lost approximately 45%, and drew approximately 1%.
+
+## Task 5 - Answering an inference question with logistic regression
+
+# How does a player's eliminations and deaths explain whether the player won the game?
+
+```{r}
+cod <- cod %>%
+  select(Win, Eliminations, Deaths) %>%
+  na.omit()
+
+model <- glm(Win ~ Eliminations + Deaths, family = binomial, data = cod)
+
+summary(model)
+```
+
+The estimated logit equation is given by:
+
+$$log(\frac{\hat{p}_i}{1-\hat{p}_i})=.61065 + 0.07082x_{i,eliminations} - 0.10076x_{i,deaths} $$
+
+```{r}
+exp(.07082)
+exp(-.10076)
+```
+
+While controlling for the number of deaths, for each additional elimination the player gets, we expect the odds of the player winning to increase by 7.34%, on average.
+
+
+While controlling for the number of eliminations, for each additional death the player has, we expect the odds of the player winning to decrease by 9.59%, on average.
+
+Let's look at the 95% confidence intervals to make sure that 0 isn't a plausible value for either of the coefficients.
+
+```{r}
+confint(model)
+```
+
+0 is not in the range of plausible values, determined by the 95% confidence intervals, for either coefficient. This suggests that both effects are statistically significant at the alpha = .05 level.
+
+Overall, these results indicate that a player's performance, in terms of eliminations and deaths, is associated with their likelihood of winning: higher eliminations are associated with higher odds of winning, while higher deaths are associated with lower odds of winning.
