@@ -1,0 +1,12 @@
+---
+title: "Stat380 Mini-Project 3"
+author: "Ben Rishel and Alven Huang"
+date: "2025-12-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
