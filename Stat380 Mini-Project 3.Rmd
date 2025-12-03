@@ -9,4 +9,65 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Discussion of Group Member Contributions
 
+The work was divided evenly between us. We contributed via a Github repository. After the work was completed, each of us reviewed the full document before submission to ensure consistency. Alven completed Task 1, and Ben completed Task 2.
+
+## Front Matter
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(forcats)
+
+cod <- read_excel("CODGames2_mp.xlsx", 
+  col_types = c("text", "text", "text", 
+  "text", "date", "text", "text", "numeric", 
+  "numeric", "numeric", "numeric", 
+  "numeric", "text", "text", "text", 
+  "text", "numeric", "numeric", "numeric", 
+  "numeric", "numeric", "numeric", 
+  "numeric", "numeric", "numeric", 
+  "numeric", "numeric"))
+
+```
+
+## Task 1 - Analysis of TotalXP with XPTYpes
+
+### Part 1 - Remove Matches with Partial Participation
+
+### Part 2 - Side-by-Side Boxplot Analysis of TotalXP and XPType
+
+### Part 3 - Supplementary Summary Statistics
+
+### Part 4 - Relationship between XPType and TotalXP
+
+## Task 2 - Model for Score Variable in Team Death Match
+
+Of the predictors total XP, eliminations, deaths, damage, XP type, and whether
+the player's team won, which should be included in the model?
+
+### Part 1 - LASSO Regression and 1 other Feature Selection Procedure (From Lecture 15)
+
+Include relevant plots, discussion of lambda, estimated equation from LASSO and 
+other method. Discuss/compare results.
+
+### Part 2 - Regression Tree for Predicting Score
+
+Include total XP, eliminations, deaths, damage, XPType,  and whether the
+player's team won. Each node must contain >=15 obs.
+
+Display the tree and report the variables associated with the 3 highest variable
+importance values.
+
+### Part 3 - Standardized Input Regression Model
+
+Based on the variables from the "other method" in Task 2 - Part 1: standardize 
+the inputs, build the regression model, report the estimated equation, and 
+report the 3 most important variables based on the magnitude of the estimated
+coefficients.
+
+Compare the 3 most important variables with the regression tree's 3 highest 
+variable importance values.
